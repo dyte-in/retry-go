@@ -103,6 +103,9 @@ func Do(retryableFunc RetryableFunc, opts ...Option) error {
 			select {
 			case <-time.After(delay(config, n, err)):
 			case <-config.context.Done():
+				if config.lastErrorOnly {
+					return config.context.Err()
+				}
 				return nil
 			}
 		}
